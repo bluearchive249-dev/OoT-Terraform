@@ -16,3 +16,7 @@ void Terraform_Cancel();
 bool Terraform_IsSculpting();
 bool Terraform_BeginSculpt();
 bool Terraform_RestoreGroundHere();
+bool Terraform_BeginTarget();
+bool Terraform_IsTargeting();
+void Terraform_EndTarget();
+int Terraform_TargetFrame(Input* input, Vec3f* pos, s16* yaw);
