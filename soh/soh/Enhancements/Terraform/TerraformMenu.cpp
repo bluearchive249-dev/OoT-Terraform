@@ -242,9 +242,10 @@ void TerraformWindow::Draw() {
         std::string piece = std::string(texName != nullptr ? std::string("Texture: ") + texName + "  (L: next)    " : "") +
                             "Stick: move    C-Left/Right: turn    C-Up/Down: raise/lower (R held: taller/shorter)    "
                             "D-pad: longer/shorter, wider/narrower    Z: onto the floor    A: set down    B: cancel";
+        std::string sculpt = std::string(Terraform_SculptInfo()) +
+                             "    Stick: move the brush    A (hold): raise    Z (hold): lower    D-pad: brush size    B: done";
         const char* help = Terraform_IsSculpting()
-                               ? "Stick: move the brush    A (hold): raise    Z (hold): lower    D-pad: brush size    "
-                                 "B: done"
+                               ? sculpt.c_str()
                                : piece.c_str();
         float fontSize = ImGui::GetFontSize() * scale;
         ImVec2 ts = ImGui::GetFont()->CalcTextSizeA(fontSize, vp->Size.x * 0.9f, vp->Size.x * 0.9f, help);

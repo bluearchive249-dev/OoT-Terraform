@@ -21,3 +21,4 @@ bool Terraform_IsTargeting();
 void Terraform_EndTarget();
 int Terraform_TargetFrame(Input* input, Vec3f* pos, s16* yaw);
 const char* Terraform_PlacingTexName();
+const char* Terraform_SculptInfo();
