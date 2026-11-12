@@ -44,6 +44,8 @@
 #include "soh/Enhancements/randomizer/Plandomizer.h"
 #include "soh/SohGui/SohModals.h"
 
+std::shared_ptr<Ship::GuiWindow> Terraform_CreateWindow(); // (in TerraformMenu.cpp)
+
 namespace SohGui {
 
 // MARK: - Properties
@@ -111,7 +113,6 @@ std::shared_ptr<SohModalWindow> mModalWindow;
 std::shared_ptr<Notification::Window> mNotificationWindow;
 std::shared_ptr<TimeDisplayWindow> mTimeDisplayWindow;
 std::shared_ptr<AnchorRoomWindow> mAnchorRoomWindow;
-std::shared_ptr<Ship::GuiWindow> Terraform_CreateWindow();
 std::shared_ptr<Ship::GuiWindow> mTerraformWindow;
 
 UIWidgets::Colors GetMenuThemeColor() {
@@ -272,7 +273,7 @@ void SetupGuiElements() {
     gui->AddGuiWindow(mTimeDisplayWindow);
     mAnchorRoomWindow = std::make_shared<AnchorRoomWindow>(CVAR_WINDOW("AnchorRoom"), "Anchor Room");
     gui->AddGuiWindow(mAnchorRoomWindow);
-    mTerraformWindow = Terraform_CreateWindow();
+    mTerraformWindow = ::Terraform_CreateWindow();
     gui->AddGuiWindow(mTerraformWindow);
     mTerraformWindow->Show();
 }
