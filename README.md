@@ -5,8 +5,8 @@ build pieces, add water and reshape the ground of any area, from a menu inside t
 
 Copyright © 2026 Grimsfrost. All rights reserved. See `AI-POLICY.md`.
 
-This repository holds only the mod's own source files. It contains no game data and no Nintendo assets. You need to
-add the files to Ship of Harkinian's source and build the game yourself.
+This repository is a complete copy of Ship of Harkinian with the terraforming mod built in. It contains no game data
+and no Nintendo assets: the game reads those from your own ROM, as Ship of Harkinian always does.
 
 **Status: experimental.** Sculpting the ground in particular has had little testing.
 
@@ -57,57 +57,19 @@ Menu: stick or D-pad up/down to choose, **A** to pick, **B** (or L+R again) to c
 
 ## Installing
 
-1. Copy the `soh/soh/Enhancements/Terraform` folder into the same place in Ship of Harkinian's source. The build picks
-   up new files in `soh/soh` on its own.
-2. Make these four small edits.
+1. Download the zip for your system from **Releases** (Windows, or Linux x86_64 / ARM) and extract it to a folder.
+2. Start `soh.exe` (or the AppImage on Linux) and point it to your own legally dumped Ocarina of Time ROM, exactly as with
+   Ship of Harkinian.
+3. Load a save and hold **L**, then press **R**.
 
-**`soh/soh/z_scene_otr.cpp`**
+To turn the menu off, set the console variable `gEnhancements.Terraform.Enabled` to `0`.
 
-Near the top, after the other declarations:
+### Building it yourself
 
-```cpp
-extern "C" void Terraform_BeforeCollision(PlayState* play, CollisionHeader* header);
-extern "C" void Terraform_RoomLoading(PlayState* play, const char* roomFile);
-```
-
-In `Scene_CommandCollisionHeader`, just before the `BgCheck_Allocate(...)` line:
-
-```cpp
-Terraform_BeforeCollision(play, (CollisionHeader*)cmdCol->GetRawPointer());
-```
-
-In the room loading function, just before `roomCtx->status = 1;`:
-
-```cpp
-Terraform_RoomLoading(play, play->roomList[roomNum].fileName);
-```
-
-**`soh/soh/SohGui/SohGui.cpp`**
-
-Near the other window variables:
-
-```cpp
-std::shared_ptr<Ship::GuiWindow> Terraform_CreateWindow();
-std::shared_ptr<Ship::GuiWindow> mTerraformWindow;
-```
-
-At the end of `SetupGuiElements()`:
-
-```cpp
-mTerraformWindow = Terraform_CreateWindow();
-gui->AddGuiWindow(mTerraformWindow);
-mTerraformWindow->Show();
-```
-
-And in `Destroy()`:
-
-```cpp
-mTerraformWindow = nullptr;
-```
-
-3. Build Ship of Harkinian as usual.
-
-To turn the menu off without removing it, set the console variable `gEnhancements.Terraform.Enabled` to `0`.
+The mod lives in `soh/soh/Enhancements/Terraform`, plus four small hooks: two in `soh/soh/z_scene_otr.cpp`
+(`Terraform_BeforeCollision` before the collision is allocated, `Terraform_RoomLoading` as a room loads) and two in
+`soh/soh/SohGui/SohGui.cpp` (the Terraform window is created and destroyed with the others). Build it as you would
+Ship of Harkinian; every push here also builds it on GitHub (Actions > generate-builds).
 
 ## How it works
 

@@ -1,0 +1,63 @@
+# Publishes a release from a finished "generate-builds" run: its Windows and Linux builds, zipped as the run made
+# them, with the repo's mods folder (if it has one) put beside the game, attached to a new release (or, for a tag that already has
+# one, replacing its zips). Run by hand (Actions > publish-release > Run workflow).
+name: publish-release
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "The generate-builds run whose builds to publish"
+        required: true
+      tag:
+        description: "Version tag, e.g. v1.0"
+        required: true
+      title:
+        description: "Release title"
+        required: true
+      prerelease:
+        description: "Mark as a pre-release"
+        type: boolean
+        default: true
+      notes:
+        description: "Release notes"
+        required: false
+        default: ""
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: repo
+          sparse-checkout: mods
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: builds
+      - name: Zip the builds
+        run: |
+          cd builds
+          for d in soh-windows soh-linux-x86_64 soh-linux-aarch64; do
+            if [ -d "$d" ]; then
+              if [ -d ../repo/mods ]; then mkdir -p "$d/mods" && cp -r ../repo/mods/. "$d/mods/"; fi
+              (cd "$d" && zip -qr "../OoT-Terraform-${{ inputs.tag }}-${d#soh-}.zip" .)
+            fi
+          done
+          ls -la
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NOTES: ${{ inputs.notes }}
+        run: |
+          PRE=""
+          if [ "${{ inputs.prerelease }}" = "true" ]; then PRE="--prerelease"; fi
+          if gh release view "${{ inputs.tag }}" -R "${{ github.repository }}" > /dev/null 2>&1; then
+            gh release upload "${{ inputs.tag }}" builds/*.zip -R "${{ github.repository }}" --clobber
+            exit 0
+          fi
+          gh release create "${{ inputs.tag }}" builds/*.zip -R "${{ github.repository }}" \
+            --target "${{ github.sha }}" --title "${{ inputs.title }}" --notes "$NOTES" $PRE
