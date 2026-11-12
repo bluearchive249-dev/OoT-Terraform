@@ -238,11 +238,14 @@ void TerraformWindow::Draw() {
     if (Terraform_IsPlacing()) {
         // The menu out of the way, the controls along the bottom
         ImDrawList* list = ImGui::GetForegroundDrawList(vp);
+        const char* texName = Terraform_PlacingTexName();
+        std::string piece = std::string(texName != nullptr ? std::string("Texture: ") + texName + "  (L: next)    " : "") +
+                            "Stick: move    C-Left/Right: turn    C-Up/Down: raise/lower (R held: taller/shorter)    "
+                            "D-pad: longer/shorter, wider/narrower    Z: onto the floor    A: set down    B: cancel";
         const char* help = Terraform_IsSculpting()
                                ? "Stick: move the brush    A (hold): raise    Z (hold): lower    D-pad: brush size    "
                                  "B: done"
-                               : "Stick: move    C-Left/Right: turn    C-Up/Down: raise/lower (R held: taller/shorter)    "
-                                 "D-pad: longer/shorter, wider/narrower    Z: onto the floor    A: set down    B: cancel";
+                               : piece.c_str();
         float fontSize = ImGui::GetFontSize() * scale;
         ImVec2 ts = ImGui::GetFont()->CalcTextSizeA(fontSize, vp->Size.x * 0.9f, vp->Size.x * 0.9f, help);
         ImVec2 p(vp->Pos.x + (vp->Size.x - ts.x) * 0.5f, vp->Pos.y + vp->Size.y - ts.y - 24.0f);

@@ -33,6 +33,7 @@ Menu: stick or D-pad up/down to choose, **A** to pick, **B** (or L+R again) to c
 | C-Up / C-Down | Raise or lower (hold R: taller or shorter) |
 | D-pad up / down | Longer or shorter |
 | D-pad left / right | Wider or narrower |
+| L | Next texture (18 from the game: stone, brick, wood, rock, ice, metal, grass...) |
 | Z | Drop onto the floor below |
 | A | Set down |
 | B | Cancel |
